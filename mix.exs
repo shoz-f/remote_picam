@@ -51,6 +51,11 @@ defmodule RemotePicam.MixProject do
       # Dependencies for specific targets
       {:nerves_system_rpi, "~> 1.12", runtime: false, targets: :rpi},
       {:nerves_system_rpi3, "~> 1.12", runtime: false, targets: :rpi3},
+
+      {:picam, "~> 0.4.0"},
+      {:plug_cowboy, "~> 2.1"},
+      {:plug_static_index_html, "~> 1.0"},
+      {:workspace, path: "./mylib/workspace"},
     ]
   end
 

@@ -22,7 +22,7 @@ config :nerves,
   erlinit: [
     hostname_pattern: "nerves-%s"
   ]
-
+  
 # Authorize the device to receive firmware using your public key.
 # See https://hexdocs.pm/nerves_firmware_ssh/readme.html for more information
 # on configuring nerves_firmware_ssh.
@@ -48,6 +48,9 @@ config :nerves_firmware_ssh,
 
 # Configure the network using vintage_net
 # See https://github.com/nerves-networking/vintage_net for more information
+ssid = System.get_env("NERVES_NETWORK_SSID")
+psk  = System.get_env("NERVES_NETWORK_PSK")
+
 config :vintage_net,
   regulatory_domain: "US",
   config: [
@@ -57,7 +60,20 @@ config :vintage_net,
        type: VintageNetEthernet,
        ipv4: %{method: :dhcp}
      }},
-    {"wlan0", %{type: VintageNetWiFi}}
+    {"wlan0",
+     %{
+       type: VintageNetWiFi,
+       vintage_net_wifi: %{
+         networks: [
+           %{
+             key_mgmt: :wpa_psk,
+             ssid: ssid,
+             psk:  psk
+           }
+         ]
+       },
+       ipv4: %{method: :dhcp},
+    }}
   ]
 
 config :mdns_lite,
@@ -91,6 +107,11 @@ config :mdns_lite,
       port: 4369
     }
   ]
+
+# Configure the workspace setting
+config :workspace,
+  from: "remote_picam",
+  to: "/root/remote_picam"
 
 # Import target specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
