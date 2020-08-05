@@ -3,11 +3,343 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <title>Remote Picam console</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+
+  <!-- UIkit CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.5.5/dist/css/uikit.min.css" />
+
+  <!-- UIkit JS -->
+  <script src="https://cdn.jsdelivr.net/npm/uikit@3.5.5/dist/js/uikit.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/uikit@3.5.5/dist/js/uikit-icons.min.js"></script>
+  
+  <!-- My overriding-->
+  <style type="text/css">
+    img{max-width: none;}
+    .uk-offcanvas-bar {
+      left: -350px;
+      width: 350px;
+      padding: 20px 20px;
+    }
+    .uk-offcanvas-bar .uk-form-horizontal .uk-margin {
+      margin-bottom: 10px;
+    }
+    .uk-offcanvas-bar .uk-form-horizontal * + .uk-margin {
+      margin-top: 10px !important;
+    }
+    .uk-offcanvas-bar .uk-form-horizontal .uk-form-label {
+      width: 70px;
+      margin-bottom: 5px;
+      float: left;
+    }
+    .uk-offcanvas-bar .uk-form-horizontal .uk-form-controls {
+      margin-left: 80px;
+    }
+    .uk-offcanvas-bar .uk-form-horizontal .uk-form-controls-text {
+    }
+  </style>
 </head>
+
 <body>
-  <img src="captured/image.jpg">
-  <form method="post">
-    <input type="submit" value="capture">
-  </form>
+	<nav class="uk-navbar-container" uk-navbar>
+		<div class="uk-navbar-left">
+			<a class="uk-navbar-toggle" href="#cam-setting" uk-toggle>
+				<span uk-navbar-toggle-icon></span><span class="uk-margin-small-left">Camera setting</span>
+			</a>
+		</div>
+	</nav>
+
+  <div class="uk-container">
+	  <div style="width: 640px; height: 480px; overflow: auto;">
+			<img id="captured" src="captured/image.jpg">
+	  </div>
+	  <button id="capture" class="uk-button uk-button-default">CAPTURE</button>
+	</div>
+
+  <div id="cam-setting" uk-offcanvas="mode: push; overlay: true">
+    <div class="uk-offcanvas-bar">
+      <button class="uk-offcanvas-close" type="button" uk-close></button>
+
+      <H4>Camera setting</H4>
+
+      <form id="cam_setting" method="post" class="uk-form-horizontal">
+
+        <div class="uk-margin">
+          <label class="uk-form-label" for="fov">resolution</label>
+          <div class="uk-form-controls">
+            <select id="fov" class="uk-select">
+              <option value="QVGA">320x240 - QVGA</option>
+              <option value="VGA">640x480 - VGA</option>
+              <option value="720p">1280x720 - 720p</option>
+              <option value="960p">1280x969 - 960p</option>
+              <option value="1080p">1920x1080 - 1080p</option>
+              <option value="5M">2592x1944 - 5M</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="uk-margin">
+          <label class="uk-form-label" for="sharpness">sharpness</label>
+          <div class="uk-form-controls">
+            <input id="sharpness" class="uk-input" type="number" step="1" min="-100" max="100" value="0">
+          </div>
+        </div>
+
+        <div class="uk-margin">
+          <label class="uk-form-label" for="contrast">contrast</label>
+          <div class="uk-form-controls">
+            <input id="contrast" class="uk-input" type="number" step="1" min="-100" max="100" value="0">
+          </div>
+        </div>
+
+        <div class="uk-margin">
+          <label class="uk-form-label" for="brightness">brightness</label>
+          <div class="uk-form-controls">
+            <input id="brightness" class="uk-input" type="number" step="1" min="0" max="100" value="50">
+          </div>
+        </div>
+
+        <div class="uk-margin">
+          <label class="uk-form-label" for="saturation">saturation</label>
+          <div class="uk-form-controls">
+            <input id="saturation" class="uk-input" type="number" step="1" min="-100" max="100" value="0">
+          </div>
+        </div>
+
+        <div class="uk-margin">
+          <label class="uk-form-label" for="iso">ISO</label>
+          <div class="uk-form-controls">
+            <select id="iso" class="uk-select">
+              <option value="0">auto</option>
+              <option value="100">100</option>
+              <option value="125">125</option>
+              <option value="160">160</option>
+              <option value="200">200</option>
+              <option value="250">250</option>
+              <option value="320">320</option>
+              <option value="400">400</option>
+              <option value="500">500</option>
+              <option value="640">640</option>
+              <option value="800">800</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="uk-margin">
+          <label class="uk-form-label" for="vtab">vstab</label>
+          <div class="uk-form-controls uk-form-controls-text">
+            <label><input id="vstab" class="uk-checkbox" type="checkbox">&nbsp;</label>
+          </div>
+        </div>
+
+        <div class="uk-margin">
+          <label class="uk-form-label" for="ev">EV</label>
+          <div class="uk-form-controls">
+            <input id="ev" class="uk-input" type="number" step="1" min="-10" max="10" value="0">
+          </div>
+        </div>
+
+        <div class="uk-margin">
+          <label class="uk-form-label" for="exposure">exposure</label>
+          <div class="uk-form-controls">
+            <select id="exposure" class="uk-select">
+              <option value="auto">auto</option>
+              <option value="night">night</option>
+              <option value="backlight">backlight</option>
+              <option value="spotlight">spotlight</option>
+              <option value="sports">sports</option>
+              <option value="snow">snow</option>
+              <option value="beach">beach</option>
+              <option value="verylong">verylong</option>
+              <option value="fixedfps">fixedfps</option>
+              <option value="antishake">antishake</option>
+              <option value="firework">firework</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="uk-margin">
+          <label class="uk-form-label" for="awb">awb</label>
+          <div class="uk-form-controls">
+            <select id="awb" class="uk-select">
+              <option value="off">off</option>
+              <option value="auto">auto</option>
+              <option value="sun">sun</option>
+              <option value="cloud">cloud</option>
+              <option value="shade">shade</option>
+              <option value="tungsten">tungsten</option>
+              <option value="fluorescent">fluorescent</option>
+              <option value="incandescent">incandescent</option>
+              <option value="flash">flash</option>
+              <option value="horizon">horizon</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="uk-margin">
+          <label class="uk-form-label" for="imxfx">imxfx</label>
+          <div class="uk-form-controls">
+            <select id="imxfx" class="uk-select">
+              <option value="none">none</option>
+              <option value="negative">negative</option>
+              <option value="solarise">solarise</option>
+              <option value="sketch">sketch</option>
+              <option value="denoise">denoise</option>
+              <option value="emboss">emboss</option>
+              <option value="oilpaint">oilpaint</option>
+              <option value="hatch">hatch</option>
+              <option value="gpen">gpen</option>
+              <option value="pastel">pastel</option>
+              <option value="watercolour">watercolour</option>
+              <option value="watercolor">watercolor</option>
+              <option value="film">film</option>
+              <option value="blur">blur</option>
+              <option value="saturation">saturation</option>
+              <option value="colourswap">colourswap</option>
+              <option value="colorswap">colorswap</option>
+              <option value="washedout">washedout</option>
+              <option value="posterise">posterise</option>
+              <option value="colourpoint">colourpoint</option>
+              <option value="colorpoint">colorpoint</option>
+              <option value="colourbalance">colourbalance</option>
+              <option value="colorbalance">colorbalance</option>
+              <option value="cartoon">cartoon</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="uk-margin">
+          <label class="uk-form-label" for="metering">metering</label>
+          <div class="uk-form-controls">
+            <select id="metering" class="uk-select">
+              <option value="average">average</option>
+              <option value="spot">spot</option>
+              <option value="backlit">backlit</option>
+              <option value="matrix">matrix</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="uk-margin">
+          <label class="uk-form-label" for="rotation">rotation</label>
+          <div class="uk-form-controls">
+            <input id="rotation" class="uk-input" type="number" step="1" min="0" max="359" value="0">
+          </div>
+        </div>
+
+        <div class="uk-margin">
+          <label class="uk-form-label">flip</label>
+          <div class="uk-form-controls uk-form-controls-text">
+            <label><input id="hflip" class="uk-checkbox" type="checkbox">H-flip</label>
+            <label><input id="vflip" class="uk-checkbox" type="checkbox">V-flip</label>
+          </div>
+        </div>
+
+        <div class="uk-margin">
+          <label class="uk-form-label">ROI[x,y,w,h]</label>
+          <div class="uk-form-controls">
+            <span>
+              <input id="roi-x" class="uk-input uk-width-2-5" type="number" step="1" min="0" max="100" value="0">
+              <input id="roi-y" class="uk-input uk-width-2-5" type="number" step="1" min="0" max="100" value="0">
+              %
+            </span>
+            <span>
+              <input id="roi-w" class="uk-input uk-width-2-5" type="number" step="1" min="0" max="100" value="100">
+              <input id="roi-h" class="uk-input uk-width-2-5" type="number" step="1" min="0" max="100" value="100">
+              %
+            </span>
+          </div>
+        </div>
+
+        <div class="uk-margin">
+          <label class="uk-form-label" for="shutter">shutter</label>
+          <div class="uk-form-controls">
+            <input id="shutter" class="uk-input" type="number" step="1" min="0" value="0">
+          </div>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <script>
+    $('#capture').on('click', function() {
+      $.ajax({
+        url: './cmd/capture',
+        type: 'POST',
+      }).done(function(data) {
+        $("#captured").attr("src", "captured/image.jpg?timestamp=" + new Date().getTime());
+      });
+    });
+
+
+    $(document).ready(function() {
+      $.ajax({
+        url: './cmd/cam_setting',
+        type: 'GET'
+      }).always(function(conf) {
+        $('#fov'       ).val(conf.size);
+        $('#sharpness' ).val(conf.sharpness);
+        $('#contrast'  ).val(conf.contrast);
+        $('#brightness').val(conf.brightness);
+        $('#saturation').val(conf.saturation);
+        $('#iso'       ).val(conf.iso);
+        $('#vstab'     ).prop('checked', conf.vstab);
+        $('#ev'        ).val(conf.ev);
+        $('#exposure'  ).val(conf.exposure);
+        $('#awb'       ).val(conf.awb);
+        $('#imxfx'     ).val(conf.imxfx);
+        $('#metering'  ).val(conf.metering);
+        $('#rotation'  ).val(conf.rotation);
+        $('#hflip'     ).prop('checked', conf.hflip);
+        $('#vflip'     ).prop('checked', conf.vflip);
+        $('#roi-x'     ).val(conf.roi[0]*100),
+        $('#roi-y'     ).val(conf.roi[1]*100),
+        $('#roi-w'     ).val(conf.roi[2]*100),
+        $('#roi-h'     ).val(conf.roi[3]*100),
+        $('#shutter'   ).val(conf.shutter);
+      });
+    });
+
+
+$('#cam-setting').on('hide', function() {
+  $.ajax({
+    url:  './cmd/cam_setting',
+    type: 'POST',
+    contentType: 'application/json',
+    data: JSON.stringify(
+    {
+      'size'       : $('#fov').val(),
+      'sharpness'  : parseInt($('#sharpness').val(), 10),
+      'contrast'   : parseInt($('#contrast').val(), 10),
+      'brightness' : parseInt($('#brightness').val(), 10),
+      'saturation' : parseInt($('#saturation').val(), 10),
+      'iso'        : parseInt($('#iso').val(), 10),
+      'vstab'      : $('#vstab').prop('checked'),
+      'ev'         : parseInt($('#ev').val(), 10),
+      'exposure'   : $('#exposure').val(),
+      'fps'        : 0.0,
+      'awb'        : $('#awb').val(),
+      'image FX'   : $('#imxfx').val(),
+      'color FX'   : "none",
+      'metering'   : $('#metering').val(),
+      'rotation'   : parseInt($('#rotation').val(), 10),
+      'hflip'      : $('#hflip').prop('checked'),
+      'vflip'      : $('#vflip').prop('checked'),
+      'roi'        : [
+                       parseInt($('#roi-x').val(),10)/100.0,
+                       parseInt($('#roi-y').val(),10)/100.0,
+                       parseInt($('#roi-w').val(),10)/100.0,
+                       parseInt($('#roi-h').val(),10)/100.0
+                     ],
+      'shutter'    : parseInt($('#shutter').val(), 10)
+    }),
+  }).always(function(arg1, status, arg2) {
+  });
+});
+</script>
 </body>
 </html>

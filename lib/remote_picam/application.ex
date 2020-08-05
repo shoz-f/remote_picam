@@ -5,12 +5,10 @@ defmodule RemotePicam.Application do
   
   use Application
 
-  alias Workspace
-
   def start(_type, _args) do
-    # Setup factory defaulte data set in /root (writable partitioin)
-    Workspace.setup(:remote_picam)
- 
+    # Setup application workspace in /root
+    RemotePicam.setup()
+
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: RemotePicam.Supervisor]

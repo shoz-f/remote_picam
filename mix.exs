@@ -55,7 +55,7 @@ defmodule RemotePicam.MixProject do
       {:picam, "~> 0.4.0"},
       {:plug_cowboy, "~> 2.1"},
       {:plug_static_index_html, "~> 1.0"},
-      {:workspace, path: "./mylib/workspace"},
+      {:poison, "~> 4.0.1"},
     ]
   end
 

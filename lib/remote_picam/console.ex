@@ -1,40 +1,48 @@
 defmodule RemotePicam.Console do
   use Plug.Router
-  
-  alias Workspace
-
-  @wwwroot {:remote_picam, "priv/wwwroot"}
 
   plug Plug.Static.IndexHtml, at: "/"
+  plug Plug.Static, at: "/", from: {:remote_picam, "priv/wwwroot"}
   plug :match
-  plug Plug.Parsers, parsers: [:urlencoded]
+  plug Plug.Parsers, parsers: [:json], pass: ["text/*"], json_decoder: {Poison, :decode!, [[as: %RemotePicam{}]]}
   plug :dispatch
-  plug Plug.Static, at: "/", from: @wwwroot
-  plug :resp_404
 
   get "/captured/image.jpg" do
     conn
-      |> put_resp_header("content-type", "image/jpeg")
-      |> send_file(200, Workspace.path("image.jpg"))
-      |> halt
+    |> put_resp_header("content-type", "image/jpeg")
+    |> send_file(200, RemotePicam.workspace("image.jpg"))
   end
-  
-  post "/index.html" do
-    Picam.set_size(640, 480)
 
-    with {:ok, file} <- File.open(Workspace.path("image.jpg"), [:write]) do
-      IO.binwrite(file, Picam.next_frame)
-      File.close(file)
-    end
+  post "/cmd/capture" do
+    RemotePicam.capture()
+    send_resp(conn, 201, "captured")
+  end
 
-    %{conn | method: "GET"}
+  get "/cmd/cam_setting" do
+    {:ok, json} =
+      RemotePicam.load("remote_picam.json")
+      |> Poison.encode()
+
+	conn
+    |> put_resp_header("content-type", "application/json")
+    |> send_resp(200, json)
+  end
+
+  post "/cmd/cam_setting" do
+    RemotePicam.configure(conn.params)
+    send_resp(conn, 201, "OK")
+  end
+
+  post "/cmd/save_setting" do
+    RemotePicam.save("remote_picam.json", conn.params)
+    send_resp(conn, 201, "OK")
   end
 
   match _ do
-    conn
+    send_resp(conn, 404, conn)
   end
   
-  def resp_404(conn, _opts) do
-    send_resp(conn, 404, "File Not Found")
+  def init(opts) do
+    IO.inspect opts
   end
 end
