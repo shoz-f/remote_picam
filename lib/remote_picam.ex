@@ -24,8 +24,9 @@ defmodule RemotePicam do
     roi:        [0,0,1,1],
     shutter:    0
 
-  alias Picam
-
+  # define workspace path for application
+  @workspace unless Mix.env() == :test, do: "/root/remote_picam", else: "./test/tmp"
+  
   @doc """
   Add following funcs to manage app workspace
   - setup()
@@ -36,7 +37,7 @@ defmodule RemotePicam do
   def get_env() do
     [
       from:   "priv/remote_picam",
-      to:     "/root/remote_picam",
+      to:     @workspace,
       app:    Application.app_dir(:remote_picam),
       policy: :replace
     ]
@@ -105,7 +106,7 @@ defmodule RemotePicam do
   end
 
   @doc """
-  Function enties.
+  Picam function enties.
   """
   defdelegate next_frame(),           to: Picam, as: :next_frame
   def size(mode) do

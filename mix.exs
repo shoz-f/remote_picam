@@ -52,10 +52,13 @@ defmodule RemotePicam.MixProject do
       {:nerves_system_rpi, "~> 1.12", runtime: false, targets: :rpi},
       {:nerves_system_rpi3, "~> 1.12", runtime: false, targets: :rpi3},
 
-      {:picam, "~> 0.4.0"},
+      {:picam, "~> 0.4.0", targets: @all_targets},
       {:plug_cowboy, "~> 2.1"},
       {:plug_static_index_html, "~> 1.0"},
       {:poison, "~> 4.0.1"},
+
+      {:mock, path: "./test/mock", only: :test},
+      {:excoveralls, "~> 0.13.0", only: :test},
     ]
   end
 

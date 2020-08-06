@@ -7,7 +7,7 @@ defmodule WorkspaceTest do
     def get_env() do
       [
         from:   "priv/remote_picam",
-        to:     "./tmp/remote_picam/workspace",
+        to:     "./test/tmp/workspace",
         app:    Application.app_dir(:remote_picam),
         policy: :replace
       ]
@@ -51,8 +51,5 @@ defmodule WorkspaceTest do
     File.rm_rf(@dst_dir)
     assert {:ok, _} = App.setup()
     assert File.exists?(@dst_dir)
-  end
-  
-  test "examination" do
   end
 end
