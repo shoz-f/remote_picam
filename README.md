@@ -1,32 +1,72 @@
 # RemotePicam
 
-**TODO: Add description**
+Remote still camera example with Nerves/Picam
 
-## Targets
+Nerves/Picamライブラリを用いた Wifiリモート・スチル・カメラの Nervesアプリです。
 
-Nerves applications produce images for hardware targets based on the
-`MIX_TARGET` environment variable. If `MIX_TARGET` is unset, `mix` builds an
-image that runs on the host (e.g., your laptop). This is useful for executing
-logic tests, running utilities, and debugging. Other targets are represented by
-a short name like `rpi3` that maps to a Nerves system image for that platform.
-All of this logic is in the generated `mix.exs` and may be customized. For more
-information about targets see:
+[注]Picamライブラリは MJPEGビデオ配信を出来る様に設計されていますが、このアプリでは敢えてスチル・カメラとして利用しています。
 
-https://hexdocs.pm/nerves/targets.html#content
+## Instaration
+Nervesの [VintageNet](https://github.com/nerves-networking/vintage_net)ライブラリの Wifiコネクトを使用しています。<br>
+接続先の Wifiルーターの SSID/PSKは、環境変数"NERVES_NETWORK_SSID"と"NERVES_NETWORK_PSK"から読み取ります。
+アプリをビルドする前に、お使いの Wifiルーターの SSID/PSKを各環境変数にセットして下さい。
 
-## Getting Started
+```bash
+export NERVES_NETWORK_SSID="******"
+export NERVES_NETWORK_PSK="******"
+```
 
-To start your Nerves app:
-  * `export MIX_TARGET=my_target` or prefix every command with
-    `MIX_TARGET=my_target`. For example, `MIX_TARGET=rpi3`
-  * Install dependencies with `mix deps.get`
-  * Create firmware with `mix firmware`
-  * Burn to an SD card with `mix firmware.burn`
+<br>
+このリポジトリにアップしているファイル・セットでは、ターゲット・デバイスを無印ラズパイとラズパイ3に絞った設定になっています。
+その他のラズパイで利用する場合は、"./mix.exs"に依存関係を追加して下さい。
+
+```elixir:mix.exs
+defmodule RemotePicam.MixProject do
+  use Mix.Project
+  :
+  :
+  @all_targtes [:rpi, :rpi3]    <-- ここに :rpi0等を追加
+  :
+  :
+  def deps do
+    [
+      :
+      :
+      # Dependencies for specific targets
+      {:nerves_system_rpi, "~> 1.12", runtime: false, targets: :rpi},
+      <-- ここに {:nerves_system_rpi0, ……}等を追加
+    ]
+  end
+  :
+```
+<br>
+ビルド& SDカード作成は、Nervesアプリの基本のビルト手順の通りです。
+
+```bash
+export MIX_TARGET=rpi
+mix deps.get
+mix firmware
+<<SDをカード・スロットに挿入>>
+mix burn
+```
+
+## Usage
+ラズパイへのカメラの接続は、例えば下記のドキュメントを参考にしてください。
+
+* Getting started with the Camera Module:<br>
+https://projects.raspberrypi.org/en/projects/getting-started-with-picamera
+
+<br>
+上で作成したSDカードをラズパイに差し込み電源を入れると、ラズパイ上で HTTPサーバーが立ち上がります。<br>
+PCのブラウザで
+<pre>"http://nerves.local:4000"</pre>
+を開けば、このアプリのコンソール画面が表示されます。カメラのシャッターは、画面の下の方にある [Capture]ボタンです。
+また、画面の上の方にある [Camera setting]を押せば、カメラのモード設定画面が現れます。
+<br>
+Enjoy (^^)v
 
 ## Learn more
-
-  * Official docs: https://hexdocs.pm/nerves/getting-started.html
-  * Official website: https://nerves-project.org/
-  * Forum: https://elixirforum.com/c/nerves-forum
-  * Discussion Slack elixir-lang #nerves ([Invite](https://elixir-slackin.herokuapp.com/))
-  * Source: https://github.com/nerves-project/nerves
+* Official docs: https://hexdocs.pm/nerves/getting-started.html
+* Picam: https://hexdocs.pm/picam/Picam.html#content
+* Picam GitHub: https://github.com/elixir-vision/picam
+* VintageNet: https://hexdocs.pm/vintage_net/cookbook.html
