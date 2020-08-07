@@ -62,7 +62,9 @@ PCのブラウザで
 <pre>"http://nerves.local:4000"</pre>
 を開けば、このアプリのコンソール画面が表示されます。カメラのシャッターは、画面の下の方にある [Capture]ボタンです。
 また、画面の上の方にある [Camera setting]を押せば、カメラのモード設定画面が現れます。
-<br>
+
+![Remote_picam console](/docs/img/remote_picam_console.jpg)
+
 Enjoy (^^)v
 
 ## Learn more
