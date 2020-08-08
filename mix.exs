@@ -58,7 +58,7 @@ defmodule RemotePicam.MixProject do
       {:poison, "~> 4.0.1"},
 
       {:mock, path: "./test/mock", only: :test},
-      {:excoveralls, "~> 0.13.0", only: :test},
+      {:excoveralls, "~> 0.13.0", only: :test}
     ]
   end
 

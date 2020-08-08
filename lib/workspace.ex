@@ -18,11 +18,20 @@ defmodule Workspace do
       	 path
        end)
 
-    # TODO:shoz:20/08/01:
-    #   need to implement updating policy here
-    
-    File.cp_r(from, to)
+    File.cp_r(from, to, &cp_policy(policy, &1, &2))
   end
+    
+  defp cp_policy(:keep, _from, _to), do: false
+  defp cp_policy(:update, from, to) do
+    with {:ok, %{mtime: time_from}} <- File.stat(from, time: :posix),
+         {:ok, %{mtime: time_to  }} <- File.stat(to,   time: :posix)
+    do
+      time_from > time_to
+    else
+      _ -> false
+  end
+  end
+  defp cp_policy(_, _from, _to), do: true		# :replace also
 
   def home(mod, segments \\ "") do
     mod.get_env()

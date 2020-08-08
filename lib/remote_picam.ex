@@ -39,7 +39,7 @@ defmodule RemotePicam do
       from:   "priv/remote_picam",
       to:     @workspace,
       app:    Application.app_dir(:remote_picam),
-      policy: :replace
+      policy: :update
     ]
   end
 
