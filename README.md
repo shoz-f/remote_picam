@@ -57,14 +57,18 @@ mix burn
 https://projects.raspberrypi.org/en/projects/getting-started-with-picamera
 
 <br>
-上で作成したSDカードをラズパイに差し込み電源を入れると、ラズパイ上で HTTPサーバーが立ち上がります。<br>
-PCのブラウザで
+上で作成したSDカードをラズパイに差し込み電源を入れると、ラズパイ上で HTTPサーバーが立ち上がります。PCのブラウザで
 <pre>"http://nerves.local:4000"</pre>
-を開けば、このアプリのコンソール画面が表示されます。カメラのシャッターは、画面の下の方にある [Capture]ボタンです。
+を開けば、このアプリのコンソール画面(下図)が表示されます。<br>
+<br>
+カメラのシャッターは、画面の下の方にある [Capture]ボタンです。
 また、画面の上の方にある [Camera setting]を押せば、カメラのモード設定画面が現れます。
 
 ![Remote_picam console](/docs/img/remote_picam_console.jpg)
 
+[注]モバイル端末は未対応です(汗)
+<br>
+<br>
 Enjoy (^^)v
 
 ## Learn more
