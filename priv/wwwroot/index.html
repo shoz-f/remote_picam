@@ -44,14 +44,21 @@
 </head>
 
 <body>
+	<!-- Navigation Bar -->
 	<nav class="uk-navbar-container" uk-navbar>
 		<div class="uk-navbar-left">
 			<a class="uk-navbar-toggle" href="#cam-setting" uk-toggle>
 				<span uk-navbar-toggle-icon></span><span class="uk-margin-small-left">Camera setting</span>
 			</a>
 		</div>
+    <div class="uk-navbar-right">
+			<div class="uk-navbar-item">
+				<button id="save" class="uk-button uk-button-default">Save setting</button>
+			</div>
+    </div>
 	</nav>
 
+  <!-- Main content - display photo -->
   <div class="uk-container">
 	  <div style="width: 640px; height: 480px; overflow: auto;">
 			<img id="captured" src="captured/image.jpg">
@@ -59,6 +66,7 @@
 	  <button id="capture" class="uk-button uk-button-default">CAPTURE</button>
 	</div>
 
+  <!-- Menu - camera setting -->
   <div id="cam-setting" uk-offcanvas="mode: push; overlay: true">
     <div class="uk-offcanvas-bar">
       <button class="uk-offcanvas-close" type="button" uk-close></button>
@@ -266,6 +274,36 @@
   </div>
 
   <script>
+    function get_cam_setting() {
+			return JSON.stringify({
+				'size'       : $('#fov').val(),
+				'sharpness'  : parseInt($('#sharpness').val(), 10),
+				'contrast'   : parseInt($('#contrast').val(), 10),
+				'brightness' : parseInt($('#brightness').val(), 10),
+				'saturation' : parseInt($('#saturation').val(), 10),
+				'iso'        : parseInt($('#iso').val(), 10),
+				'vstab'      : $('#vstab').prop('checked'),
+				'ev'         : parseInt($('#ev').val(), 10),
+				'exposure'   : $('#exposure').val(),
+				'fps'        : 0.0,
+				'awb'        : $('#awb').val(),
+				'image FX'   : $('#imxfx').val(),
+				'color FX'   : "none",
+				'metering'   : $('#metering').val(),
+				'rotation'   : parseInt($('#rotation').val(), 10),
+				'hflip'      : $('#hflip').prop('checked'),
+				'vflip'      : $('#vflip').prop('checked'),
+				'roi'        : [
+												 parseInt($('#roi-x').val(),10)/100.0,
+												 parseInt($('#roi-y').val(),10)/100.0,
+												 parseInt($('#roi-w').val(),10)/100.0,
+												 parseInt($('#roi-h').val(),10)/100.0
+											 ],
+				'shutter'    : parseInt($('#shutter').val(), 10)
+			})
+    }
+
+
     $('#capture').on('click', function() {
       $.ajax({
         url: './cmd/capture',
@@ -310,33 +348,18 @@ $('#cam-setting').on('hide', function() {
     url:  './cmd/cam_setting',
     type: 'POST',
     contentType: 'application/json',
-    data: JSON.stringify(
-    {
-      'size'       : $('#fov').val(),
-      'sharpness'  : parseInt($('#sharpness').val(), 10),
-      'contrast'   : parseInt($('#contrast').val(), 10),
-      'brightness' : parseInt($('#brightness').val(), 10),
-      'saturation' : parseInt($('#saturation').val(), 10),
-      'iso'        : parseInt($('#iso').val(), 10),
-      'vstab'      : $('#vstab').prop('checked'),
-      'ev'         : parseInt($('#ev').val(), 10),
-      'exposure'   : $('#exposure').val(),
-      'fps'        : 0.0,
-      'awb'        : $('#awb').val(),
-      'image FX'   : $('#imxfx').val(),
-      'color FX'   : "none",
-      'metering'   : $('#metering').val(),
-      'rotation'   : parseInt($('#rotation').val(), 10),
-      'hflip'      : $('#hflip').prop('checked'),
-      'vflip'      : $('#vflip').prop('checked'),
-      'roi'        : [
-                       parseInt($('#roi-x').val(),10)/100.0,
-                       parseInt($('#roi-y').val(),10)/100.0,
-                       parseInt($('#roi-w').val(),10)/100.0,
-                       parseInt($('#roi-h').val(),10)/100.0
-                     ],
-      'shutter'    : parseInt($('#shutter').val(), 10)
-    }),
+				data: get_cam_setting()
+			}).always(function(arg1, status, arg2) {
+			});
+		});
+
+
+		$('#save').on('click', function() {
+      $.ajax({
+        url: './cmd/save_setting',
+        type: 'POST',
+ 				contentType: 'application/json',
+				data: get_cam_setting()
   }).always(function(arg1, status, arg2) {
   });
 });

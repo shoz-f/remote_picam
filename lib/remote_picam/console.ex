@@ -19,9 +19,8 @@ defmodule RemotePicam.Console do
   end
 
   get "/cmd/cam_setting" do
-    {:ok, json} =
-      RemotePicam.load("remote_picam.json")
-      |> Poison.encode()
+    json = RemotePicam.load("remote_picam.json")
+           |> Poison.encode!()
 
 	conn
     |> put_resp_header("content-type", "application/json")
